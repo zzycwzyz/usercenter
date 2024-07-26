@@ -20,9 +20,9 @@ export async function outLogin(options?: { [key: string]: any }) {
   });
 }
 
-/** 登录接口 POST /api/user/register */
+/** 登录接口 POST /user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/user/register', {
+  return request<API.LoginResult>('/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export async function register(body: API.RegisterParams, options?: { [key: strin
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.LoginResult>('/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

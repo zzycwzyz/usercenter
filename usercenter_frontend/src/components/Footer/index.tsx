@@ -19,8 +19,8 @@ const Footer: React.FC = () => {
         },
         {
           key: 'github',
-          title: <><GithubOutlined /> 编程大白 </>,
-          href: 'https://github.com',
+          title: <><GithubOutlined /> 小白 </>,
+          href: 'https://github.com/zzycwzyz/usercenter',
           blankTarget: true,
         },
       ]}

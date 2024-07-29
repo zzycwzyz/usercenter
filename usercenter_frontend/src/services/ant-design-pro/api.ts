@@ -2,19 +2,17 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取当前的用户 GET /api/currentUser */
+/** 获取当前的用户 GET /user/current */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<{
-    data: API.CurrentUser;
-  }>('/api/currentUser', {
+  return request<API.CurrentUser>('/user/current', {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-/** 退出登录接口 POST /api/user/login */
+/** 退出登录接口 POST /user/logout */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/user/login', {
+  return request<Record<string, any>>('/user/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -22,7 +20,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/user/register', {
+  return request<API.RegisterResult>('/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,6 +38,14 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       'Content-Type': 'application/json',
     },
     data: body,
+    ...(options || {}),
+  });
+}
+
+/** 搜索用户 GET /user/search */
+export async function searchUsers(options?: { [key: string]: any }) {
+  return request<API.CurrentUser[]>('/user/search', {
+    method: 'GET',
     ...(options || {}),
   });
 }

@@ -6,10 +6,14 @@ import {SettingDrawer} from '@ant-design/pro-components';
 import {history, Link, RunTimeLayoutConfig} from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import {RequestConfig} from "@@/plugin-request/request";
+import {AxiosResponse} from "axios";
+import {message} from "antd";
+import {stringify} from "querystring";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 const whiteList = [loginPath, '/user/register'];
+type WithPromise<T> = T | Promise<T>;
 
 
 /**
@@ -34,20 +38,48 @@ export async function getInitialState(): Promise<{
   if (!whiteList.includes(location.pathname)) {
     const currentUser = await fetchUserInfo();
     return {
+      // @ts-ignore
       fetchUserInfo,
+      // @ts-ignore
       currentUser,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
-    fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
 
 export const request: RequestConfig = {
   baseURL: '/api',
-  timeout: 30000
+  timeout: 30000,
+  // 自定义全局响应拦截器
+  responseInterceptors: [
+    // @ts-ignore
+    function <T extends AxiosResponse<T, any> = any>(response: AxiosResponse<T>): WithPromise<AxiosResponse<T>> {
+      console.log('全局响应拦截器', response);
+      console.log('全局响应拦截器', response.data);
+      if ('code' in response.data && 'data' in response.data && 'description' in response.data) {
+        if (response.data.code === 0){
+          return response.data.data;
+        }
+        if (response.data.code === 40100) {
+          message.error('请先登录');
+          history.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: location.pathname,
+            }),
+          });
+        } else {
+          console.log('全局响应拦截器', response.data.description);
+          // @ts-ignore
+          return response.data;
+        }
+      }
+      return Promise.resolve(response.data as any);
+    }
+  ]
 };
 
 

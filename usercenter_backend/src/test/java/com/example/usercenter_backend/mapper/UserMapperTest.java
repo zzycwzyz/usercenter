@@ -37,4 +37,8 @@ class UserMapperTest {
         long result = userService.userRegister(userAccount, userPassword, checkPassword);
         assertNotEquals(-1, result);
     }
+
+    @Test
+    void test(){
+    }
 }

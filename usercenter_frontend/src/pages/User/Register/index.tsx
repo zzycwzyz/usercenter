@@ -8,8 +8,9 @@ import {createStyles} from 'antd-style';
 import React, {useState} from 'react';
 import Settings from '../../../../config/defaultSettings';
 import {SYSTEM_LOGO} from "@/constant";
+import {err} from "pino-std-serializers";
 
-const useStyles = createStyles(({ token }) => {
+const useStyles = createStyles(({token}) => {
   return {
     action: {
       marginLeft: '8px',
@@ -46,7 +47,7 @@ const useStyles = createStyles(({ token }) => {
 });
 const LoginMessage: React.FC<{
   content: string;
-}> = ({ content }) => {
+}> = ({content}) => {
   return (
     <Alert
       style={{
@@ -61,10 +62,10 @@ const LoginMessage: React.FC<{
 const Register: React.FC = () => {
   const [userLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const { styles } = useStyles();
+  const {styles} = useStyles();
   const handleSubmit = async (values: API.RegisterParams) => {
     const {userPassword, checkPassword} = values;
-    if(userPassword !== checkPassword) {
+    if (userPassword !== checkPassword) {
       message.error('两次输入的密码不一致');
       return;
     }
@@ -72,21 +73,23 @@ const Register: React.FC = () => {
       // 注册
       const id = await register({
         ...values,
-        type,
       });
-      if (id > 0) {
+      console.log('id', id);
+      // @ts-ignore
+      if (id && id > 0) {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
         history.push("/user/login");
         return;
+      } else {
+        throw new Error('注册失败，请重试！');
       }
-    } catch (error) {
+    } catch (error: any) {
       const defaultLoginFailureMessage = '注册失败，请重试！';
-      console.log(error);
-      message.error(defaultLoginFailureMessage);
+      message.error(error.message ?? defaultLoginFailureMessage);
     }
   };
-  const { status, type: loginType } = userLoginState;
+  const {status, type: loginType} = userLoginState;
   return (
     <div className={styles.container}>
       <Helmet>
@@ -110,7 +113,7 @@ const Register: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src={SYSTEM_LOGO} />}
+          logo={<img alt="logo" src={SYSTEM_LOGO}/>}
           title="用户中心"
           subTitle={'法外狂徒聚集地'}
           initialValues={{
@@ -133,7 +136,7 @@ const Register: React.FC = () => {
           />
 
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'错误的用户名和密码'} />
+            <LoginMessage content={'错误的用户名和密码'}/>
           )}
           {type === 'account' && (
             <>
@@ -141,7 +144,7 @@ const Register: React.FC = () => {
                 name="userAccount"
                 fieldProps={{
                   size: 'large',
-                  prefix: <UserOutlined />,
+                  prefix: <UserOutlined/>,
                 }}
                 placeholder={'请输入用户名'}
                 rules={[
@@ -155,7 +158,7 @@ const Register: React.FC = () => {
                 name="userPassword"
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined/>,
                 }}
                 placeholder={'请输入密码'}
                 rules={[
@@ -174,7 +177,7 @@ const Register: React.FC = () => {
                 name="checkPassword"
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined/>,
                 }}
                 placeholder={'请再次输入密码'}
                 rules={[
@@ -193,7 +196,7 @@ const Register: React.FC = () => {
           )}
         </LoginForm>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };

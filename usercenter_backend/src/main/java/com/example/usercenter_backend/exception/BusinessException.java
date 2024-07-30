@@ -2,6 +2,9 @@ package com.example.usercenter_backend.exception;
 
 import com.example.usercenter_backend.common.ErrorCode;
 
+/**
+ * 自定义业务异常类
+ */
 public class BusinessException extends RuntimeException {
 
     private final int code;

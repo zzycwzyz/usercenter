@@ -1,5 +1,6 @@
 package com.example.usercenter_backend.service;
 
+import com.example.usercenter_backend.common.BaseResponse;
 import com.example.usercenter_backend.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletRequest;

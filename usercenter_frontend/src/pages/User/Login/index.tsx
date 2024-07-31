@@ -78,7 +78,6 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      // @ts-ignore
       const user = await login({
         ...values,
         type,
@@ -95,7 +94,7 @@ const Login: React.FC = () => {
         console.log(redirect);
         history.push(redirect || '/');
         return;
-      }else{
+      } else {
         throw new Error('用户名或密码错误');
       }
     } catch (error: any) {

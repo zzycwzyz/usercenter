@@ -8,7 +8,6 @@ import {createStyles} from 'antd-style';
 import React, {useState} from 'react';
 import Settings from '../../../../config/defaultSettings';
 import {SYSTEM_LOGO} from "@/constant";
-import {err} from "pino-std-serializers";
 
 const useStyles = createStyles(({token}) => {
   return {
@@ -74,8 +73,6 @@ const Register: React.FC = () => {
       const id = await register({
         ...values,
       });
-      console.log('id', id);
-      // @ts-ignore
       if (id && id > 0) {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);

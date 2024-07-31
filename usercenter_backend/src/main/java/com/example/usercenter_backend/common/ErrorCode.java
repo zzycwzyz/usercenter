@@ -1,5 +1,8 @@
 package com.example.usercenter_backend.common;
 
+import lombok.Getter;
+
+@Getter
 public enum ErrorCode {
 
     SUCCESS(0, "ok", ""),
@@ -27,15 +30,4 @@ public enum ErrorCode {
         this.description = description;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

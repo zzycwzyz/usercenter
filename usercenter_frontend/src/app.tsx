@@ -3,9 +3,8 @@ import {currentUser as queryCurrentUser} from '@/services/ant-design-pro/api';
 import {LinkOutlined} from '@ant-design/icons';
 import type {Settings as LayoutSettings} from '@ant-design/pro-components';
 import {SettingDrawer} from '@ant-design/pro-components';
-import {history, Link, RunTimeLayoutConfig} from '@umijs/max';
+import {history, Link, RequestConfig, RunTimeLayoutConfig} from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import {RequestConfig} from "@@/plugin-request/request";
 import {AxiosResponse} from "axios";
 import {message} from "antd";
 import {stringify} from "querystring";
@@ -34,7 +33,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果不是登录和注册页面，执行
-  const { location } = history;
+  const {location} = history;
   if (!whiteList.includes(location.pathname)) {
     const currentUser = await fetchUserInfo();
     return {
@@ -58,38 +57,34 @@ export const request: RequestConfig = {
     // @ts-ignore
     function <T extends AxiosResponse<T, any> = any>(response: AxiosResponse<T>): WithPromise<AxiosResponse<T>> {
       console.log('全局响应拦截器', response);
-      console.log('全局响应拦截器', response.data);
-      if ('code' in response.data && 'data' in response.data && 'description' in response.data) {
-        if (response.data.code === 0){
-          return response.data.data;
-        }
-        if (response.data.code === 40100) {
-          message.error('请先登录');
-          history.replace({
-            pathname: '/user/login',
-            search: stringify({
-              redirect: location.pathname,
-            }),
-          });
-        } else {
-          console.log('全局响应拦截器', response.data.description);
-          // @ts-ignore
-          return response.data;
-        }
+      if (response.data.code === 0) {
+        return Promise.resolve(response.data);
       }
-      return Promise.resolve(response.data as any);
+      if (response.data.code === 40100) {
+        message.error('请先登录');
+        history.replace({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: location.pathname,
+          }),
+        });
+        return Promise.reject(new Error('未登录'));
+      } else {
+        console.log('全局响应拦截器', response.data.description);
+        // @ts-ignore
+        return Promise.reject(new Error(response.data.description || '请求出错'));
+      }
     }
   ]
 };
 
-
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
   return {
-    actionsRender: () => [<Question key="doc" />],
+    actionsRender: () => [<Question key="doc"/>],
     avatarProps: {
       src: initialState?.currentUser?.avatarUrl,
-      title: <AvatarName />,
+      title: <AvatarName/>,
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
@@ -97,13 +92,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     waterMarkProps: {
       content: initialState?.currentUser?.username,
     },
-    footerRender: () => <Footer />,
+    footerRender: () => <Footer/>,
     onPageChange: () => {
-      const { location } = history;
+      const {location} = history;
       console.log(initialState);
       console.log(!initialState?.currentUser);
       console.log(!whiteList.includes(location.pathname));
       // 如果没有登录，重定向到 login
+      console.log(initialState?.currentUser);
       if (!initialState?.currentUser && !whiteList.includes(location.pathname)) {
         history.push(loginPath);
       }
@@ -130,11 +126,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined/>
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

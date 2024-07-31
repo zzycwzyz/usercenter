@@ -1,10 +1,13 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from '@umijs/max';
+// import { request } from '@umijs/max';
+import request from '@/plugins/globalRequest';
+
+
 
 /** 登录接口 POST /user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
-  return request<API.BaseResponse<API.RegisterResult>>('/user/register', {
+  return request<API.RegisterResult>('/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,8 +52,6 @@ export async function currentUser(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
-
-
 
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {

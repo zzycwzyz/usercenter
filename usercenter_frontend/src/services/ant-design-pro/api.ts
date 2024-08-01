@@ -17,9 +17,9 @@ export async function register(body: API.RegisterParams, options?: { [key: strin
   });
 }
 
-/** 登录接口 POST /api/login/account */
+/** 登录接口 POST /user/login */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.BaseResponse<API.LoginResult>>('/user/login', {
+  return request<API.LoginResult>('/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
 
 /** 退出登录接口 POST /user/logout */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<API.BaseResponse<Record<string, any>>>('/user/logout', {
+  return request<Record<string, any>>('/user/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -39,7 +39,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 搜索用户 GET /user/search */
 export async function searchUsers(options?: { [key: string]: any }) {
-  return request<API.BaseResponse<API.CurrentUser[]>>('/user/search', {
+  return request<API.CurrentUser[]>('/user/search', {
     method: 'GET',
     ...(options || {}),
   });
@@ -47,7 +47,7 @@ export async function searchUsers(options?: { [key: string]: any }) {
 
 /** 获取当前的用户 GET /user/current */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.BaseResponse<API.CurrentUser>>('/user/current', {
+  return request<API.CurrentUser>('/user/current', {
     method: 'GET',
     ...(options || {}),
   });

@@ -61,7 +61,7 @@ public class UserController {
     public BaseResponse<User> geCurrentUser(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
         if (user == null || (user.getId() <= 0)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "未登录");
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
         // 这里不从 session 中取用户信息，可能不是最新的，从库里面取
         User ret = userService.getById(user.getId());
@@ -99,7 +99,7 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request) {
         if (request == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

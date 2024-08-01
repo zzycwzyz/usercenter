@@ -73,6 +73,7 @@ const Register: React.FC = () => {
       const id = await register({
         ...values,
       });
+      // @ts-ignore
       if (id && id > 0) {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);

@@ -1,5 +1,5 @@
 import {AvatarDropdown, AvatarName, Footer, Question} from '@/components';
-import {currentUser as queryCurrentUser} from '@/services/ant-design-pro/api';
+import {currentUser, currentUser as queryCurrentUser} from '@/services/ant-design-pro/api';
 import {LinkOutlined} from '@ant-design/icons';
 import type {Settings as LayoutSettings} from '@ant-design/pro-components';
 import {SettingDrawer} from '@ant-design/pro-components';
@@ -24,8 +24,10 @@ export async function getInitialState(): Promise<{
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
+  console.log('初始化');
   const fetchUserInfo = async () => {
     try {
+      console.log('获取用户信息');
       return await queryCurrentUser();
     } catch (error) {
       history.push(loginPath);
@@ -33,6 +35,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果不是登录和注册页面，执行
+  console.log('history', history);
   const {location} = history;
   if (!whiteList.includes(location.pathname)) {
     const currentUser = await fetchUserInfo();
@@ -56,23 +59,25 @@ export const request: RequestConfig = {
   responseInterceptors: [
     // @ts-ignore
     function <T extends AxiosResponse<T, any> = any>(response: AxiosResponse<T>): WithPromise<AxiosResponse<T>> {
-      console.log('全局响应拦截器', response);
-      if (response.data.code === 0) {
-        return Promise.resolve(response.data);
-      }
-      if (response.data.code === 40100) {
-        message.error('请先登录');
-        history.replace({
-          pathname: '/user/login',
-          search: stringify({
-            redirect: location.pathname,
-          }),
-        });
-        return Promise.reject(new Error('未登录'));
-      } else {
-        console.log('全局响应拦截器', response.data.description);
-        // @ts-ignore
-        return Promise.reject(new Error(response.data.description || '请求出错'));
+      if("code" in response.data && "message" in response.data && "description" in response.data){
+        console.log('全局响应拦截器', response);
+        if (response.data.code === 0) {
+          return Promise.resolve(response.data);
+        }
+        if (response.data.code === 40100) {
+          message.error('请先登录');
+          history.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: location.pathname,
+            }),
+          });
+          return Promise.reject(new Error('未登录'));
+        } else {
+          console.log('全局响应拦截器', response.data.description);
+          // @ts-ignore
+          return Promise.reject(new Error(response.data.description || '请求出错'));
+        }
       }
     }
   ]
@@ -93,17 +98,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       content: initialState?.currentUser?.username,
     },
     footerRender: () => <Footer/>,
-    onPageChange: () => {
-      const {location} = history;
-      console.log(initialState);
-      console.log(!initialState?.currentUser);
-      console.log(!whiteList.includes(location.pathname));
-      // 如果没有登录，重定向到 login
-      console.log(initialState?.currentUser);
-      if (!initialState?.currentUser && !whiteList.includes(location.pathname)) {
-        history.push(loginPath);
-      }
-    },
+    onPageChange: () => {},
     bgLayoutImgList: [
       {
         src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',

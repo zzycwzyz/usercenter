@@ -2,11 +2,10 @@ import {Footer} from '@/components';
 import {login} from '@/services/ant-design-pro/api';
 import {LockOutlined, UserOutlined,} from '@ant-design/icons';
 import {LoginForm, ProFormCheckbox, ProFormText,} from '@ant-design/pro-components';
-import {Helmet, history, useModel} from '@umijs/max';
+import {Helmet, history} from '@umijs/max';
 import {Alert, message, Tabs} from 'antd';
 import {createStyles} from 'antd-style';
 import React, {useState} from 'react';
-import {flushSync} from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
 import {SYSTEM_LOGO} from "@/constant";
 
@@ -62,19 +61,7 @@ const LoginMessage: React.FC<{
 const Login: React.FC = () => {
   const [userLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
@@ -86,12 +73,10 @@ const Login: React.FC = () => {
       if (user) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
-        console.log(window.location.href);
-        const urlParams = new URLSearchParams(window.location.href);
+        const urlParams = new URLSearchParams(location.search);
         const redirect = urlParams.get('redirect');
-        console.log(redirect);
+        console.log('redirect',redirect);
         history.push(redirect || '/');
         return;
       } else {

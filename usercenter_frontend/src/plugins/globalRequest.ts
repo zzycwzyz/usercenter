@@ -11,10 +11,8 @@ import {stringify} from "querystring";
  * 配置request请求时的默认参数
  */
 const request: RequestMethod<true> = extend({
-  baseUrl: '/api',
   credentials: 'include', // 默认请求是否带上cookie
-  // prefix: process.env.NODE_ENV === 'production' ? 'TODO' : undefined
-  // requestType: 'form',
+  prefix: process.env.NODE_ENV === 'production' ? 'TODO' : 'http://localhost:8000/api',
 });
 
 /**
@@ -34,24 +32,23 @@ request.interceptors.request.use((url, options): any => {
 /**
  * 所有响应拦截器
  */
-request.interceptors.response.use(async (response,options): Promise<any> => {
+request.interceptors.response.use(async (response): Promise<any> => {
   const res = await response.clone().json();
-  console.log('res', res);
-  if (response.code === 0) {
-    return response.data;
+  if (res.code === 0) {
+    return res.data;
   }
-  if (response.code === 40100) {
-    message.error('未登录');
+  if (res.code === 40100) {
     history.replace({
       pathname: '/user/login',
       search: stringify({
         redirect: location.pathname,
       }),
     });
+    message.error('未登录');
   } else {
-    message.error(response.description)
+    message.error(res.description);
   }
+  return res;
 });
-
 
 export default request;

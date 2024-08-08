@@ -53,7 +53,7 @@ export async function getInitialState(): Promise<{
 }
 
 export const request: RequestConfig = {
-  baseURL: '/api',
+  baseURL: process.env.NODE_ENV === 'production' ? 'http://user-backend.code-nav.cn/api' : 'http://localhost:8000/api',
   timeout: 30000,
   // 自定义全局响应拦截器
   responseInterceptors: [

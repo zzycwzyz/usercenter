@@ -69,7 +69,6 @@ const Login: React.FC = () => {
         ...values,
         type,
       });
-      console.log('user',user);
       if (user) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);

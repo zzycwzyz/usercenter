@@ -12,7 +12,7 @@ import {stringify} from "querystring";
  */
 const request: RequestMethod<true> = extend({
   credentials: 'include', // 默认请求是否带上cookie
-  prefix: process.env.NODE_ENV === 'production' ? 'http://user-backend.code-nav.cn/api' : 'http://localhost:8000/api',
+  prefix: process.env.NODE_ENV === 'production' ? 'http://124.70.90.198/api' : 'http://localhost:8000/api',
 });
 
 /**
@@ -48,7 +48,7 @@ request.interceptors.response.use(async (response): Promise<any> => {
   } else {
     message.error(res.description);
   }
-  return res;
+  return res.data;
 });
 
 export default request;

@@ -12,7 +12,8 @@ import {stringify} from "querystring";
  */
 const request: RequestMethod<true> = extend({
   credentials: 'include', // 默认请求是否带上cookie
-  prefix: process.env.NODE_ENV === 'production' ? 'http://124.70.90.198/api' : 'http://localhost:8000/api',
+  // prefix: process.env.NODE_ENV === 'production' ? 'http://124.70.90.198:80/api' : 'http://localhost:8000/api',
+  prefix: process.env.NODE_ENV === 'production' ? 'https://usercenter-frontend-115107-5-1315421160.sh.run.tcloudbase.com/api' : 'http://localhost:8000/api',
 });
 
 /**

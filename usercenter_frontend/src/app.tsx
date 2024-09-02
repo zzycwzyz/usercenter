@@ -1,5 +1,5 @@
 import {AvatarDropdown, AvatarName, Footer, Question} from '@/components';
-import {currentUser, currentUser as queryCurrentUser} from '@/services/ant-design-pro/api';
+import {currentUser as queryCurrentUser} from '@/services/ant-design-pro/api';
 import {LinkOutlined} from '@ant-design/icons';
 import type {Settings as LayoutSettings} from '@ant-design/pro-components';
 import {SettingDrawer} from '@ant-design/pro-components';
@@ -53,7 +53,8 @@ export async function getInitialState(): Promise<{
 }
 
 export const request: RequestConfig = {
-  baseURL: process.env.NODE_ENV === 'production' ? 'http://124.70.90.198/api' : 'http://localhost:8000/api',
+  // baseURL: process.env.NODE_ENV === 'production' ? 'http://124.70.90.198:80/api' : 'http://localhost:8000/api',
+  baseURL: process.env.NODE_ENV === 'production' ? 'https://usercenter-frontend-115107-5-1315421160.sh.run.tcloudbase.com/api' : 'http://localhost:8000/api',
   timeout: 30000,
   // 自定义全局响应拦截器
   responseInterceptors: [

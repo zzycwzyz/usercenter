@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
-// import { request } from '@umijs/max';
-import request from '@/plugins/globalRequest';
+import { request } from '@umijs/max';
+// import request from '@/plugins/globalRequest';
 
 
 

@@ -3,8 +3,6 @@
 import { request } from '@umijs/max';
 // import request from '@/plugins/globalRequest';
 
-
-
 /** 登录接口 POST /user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
   return request<API.RegisterResult>('/user/register', {
